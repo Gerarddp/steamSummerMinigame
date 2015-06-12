@@ -1,5 +1,3 @@
-var clickRate = 20; // change to number of desired clicks per second
-
 var isAlreadyRunning = false;
 var myMaxHealth = 0;
 
