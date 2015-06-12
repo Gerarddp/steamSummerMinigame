@@ -1,3 +1,5 @@
+var clickRate = 20; // change to number of desired clicks per second
+
 var isAlreadyRunning = false;
 
 function doTheThing() {
@@ -46,6 +48,7 @@ function goToLaneWithBestTarget() {
 			}
 		}
 	
+		// target the enemy of the specified type with the lowest hp
 		for (var i = 0; i < enemies.length; i++) {
 			if (enemies[i] && !enemies[i].m_bIsDestroyed) {
 				if(lowHP < 1 || enemies[i].m_flDisplayedHP < lowHP) {
@@ -58,7 +61,7 @@ function goToLaneWithBestTarget() {
 		}
 	}
 	
-	// TODO prefer lane with a dying creep as long as all living spawners have >50% health
+	// TODO maybe: Prefer lane with a dying creep as long as all living spawners have >50% health
 	
 	// go to the chosen lane
 	if (targetFound) {
@@ -76,8 +79,7 @@ function goToLaneWithBestTarget() {
 }
 
 function useMedicsIfRelevant() {
-	// regularly check HP to try to determine max health (I haven't found the variable for it yet)
-	var myMaxHealth = g_Minigame.CurrentScene().m_rgPlayerTechTree.max_hp;
+	var myMaxHealth = g_Minigame.CurrentScene().m_rgPlayerTechTree.max_hp
 	
 	// check if health is below 50%
 	var hpPercent = g_Minigame.CurrentScene().m_rgPlayerData.hp / myMaxHealth;
@@ -115,7 +117,6 @@ function attemptRespawn() {
 }
 
 var thingTimer = window.setInterval(doTheThing, 1000);
-
 function clickTheThing() {
     g_Minigame.m_CurrentScene.DoClick(
         {
