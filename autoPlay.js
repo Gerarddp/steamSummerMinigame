@@ -192,6 +192,7 @@ function triggerAbility(abilityId) {
 
 var thingTimer = window.setInterval(doTheThing, 1000);
 
+var clickRate = 10; // change to number of desired clicks per second
 function clickTheThing() {
     g_Minigame.m_CurrentScene.DoClick(
         {
