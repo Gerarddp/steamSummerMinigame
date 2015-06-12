@@ -1,11 +1,11 @@
 // ==UserScript== 
 // @name Monster Minigame Auto-script
-// @namespace https://github.com/Gerarddp/steamSummerMinigame
+// @namespace https://github.com/mouseas/steamSummerMinigame
 // @description A script that runs the Steam Monster Minigame for you.
 // @version 1.1
 // @match http://steamcommunity.com/minigame/towerattack*
-// @updateURL https://raw.githubusercontent.com/Gerarddp/steamSummerMinigame/master/autoPlay.js
-// @downloadURL https://raw.githubusercontent.com/Gerarddp/steamSummerMinigame/master/autoPlay.js
+// @updateURL https://raw.githubusercontent.com/mouseas/steamSummerMinigame/master/autoPlay.js
+// @downloadURL https://raw.githubusercontent.com/mouseas/steamSummerMinigame/master/autoPlay.js
 // ==/UserScript==
 
 // IMPORTANT: Update the @version property above to a higher number such as 1.1 and 1.2 when you update the script! Otherwise, Tamper / Greasemonkey users will not update automatically.
@@ -19,6 +19,13 @@ if (window.g_Minigame !== undefined) {
 		emitter.emit = false;
 		return emitter;
 	}
+}
+
+// disable enemy flinching animation when they get hit
+if (window.CEnemy !== undefined) {
+	window.CEnemy.prototype.TakeDamage = function() {};
+	window.CEnemySpawner.prototype.TakeDamage = function() {};
+	window.CEnemyBoss.prototype.TakeDamage = function() {};
 }
 
 if (thingTimer !== undefined) {
@@ -35,6 +42,8 @@ function doTheThing() {
 	
 	useGoodLuckCharmIfRelevant();
 	useMedicsIfRelevant();
+	useClusterBombIfRelevant();
+	useNapalmIfRelevant();
 	
 	// TODO use abilities if available and a suitable target exists
 	// - Tactical Nuke on a Spawner if below 50% and above 25% of its health
@@ -182,6 +191,62 @@ function useGoodLuckCharmIfRelevant() {
 		// Good Luck Charms is purchased, cooled down, and needed. Trigger it.
 		console.log('Good Luck Charms is purchased, cooled down, and needed. Trigger it.');
 		triggerAbility(6);
+	}
+}
+
+function useClusterBombIfRelevant() {
+	//Check if Cluster Bomb is purchased and cooled down
+	if (hasPurchasedAbility(11)) {
+		if (isAbilityCoolingDown(11)) {
+			return;
+		}
+		
+		//Check lane has monsters to explode
+		var currentLane = g_Minigame.CurrentScene().m_nExpectedLane;
+		var enemyCount = 0;
+		var enemySpawnerExists = false;
+		//Count each slot in lane
+		for (var i = 0; i < 4; i++) {
+			var enemy = g_Minigame.CurrentScene().GetEnemy(currentLane, i);
+			if (enemy) {
+				enemyCount++;
+				if (enemy.m_data.type == 0) { 
+					enemySpawnerExists = true;
+				}
+			}
+		}
+		//Bombs away if spawner and 2+ other monsters
+		if (enemySpawnerExists && enemyCount >= 3) {
+			triggerAbility(11);
+		}
+	}
+}
+
+function useNapalmIfRelevant() {
+	//Check if Napalm is purchased and cooled down
+	if (hasPurchasedAbility(12)) {
+		if (isAbilityCoolingDown(12)) {
+			return;
+		}
+		
+		//Check lane has monsters to burn
+		var currentLane = g_Minigame.CurrentScene().m_nExpectedLane;
+		var enemyCount = 0;
+		var enemySpawnerExists = false;
+		//Count each slot in lane
+		for (var i = 0; i < 4; i++) {
+			var enemy = g_Minigame.CurrentScene().GetEnemy(currentLane, i);
+			if (enemy) {
+				enemyCount++;
+				if (enemy.m_data.type == 0) { 
+					enemySpawnerExists = true;
+				}
+			}
+		}
+		//Burn them all if spawner and 2+ other monsters
+		if (enemySpawnerExists && enemyCount >= 3) {
+			triggerAbility(12);
+		}
 	}
 }
 
