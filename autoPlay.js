@@ -570,20 +570,6 @@ var thingTimer = window.setInterval(function(){
 	}
 }, 1000);
 
-// disable enemy flinching animation when they get hit (must be manually called in the console)
-function disableFlinchingAnimation() {
-	if (CEnemy !== undefined) {
-		CEnemy.prototype.TakeDamage = function() {};
-		CEnemySpawner.prototype.TakeDamage = function() {};
-		CEnemyBoss.prototype.TakeDamage = function() {};
-	}
-}
-
-// disable damage text from clicking (must be manually called in the console)
-function disableDamageText() {
-	g_Minigame.CurrentScene().DoClickEffect = function() {};
-	g_Minigame.CurrentScene().DoCritEffect = function( nDamage, x, y, additionalText ) {};
-}
 var clickRate = 10; // change to number of desired clicks per second
 function clickTheThing() {
     g_Minigame.m_CurrentScene.DoClick(
